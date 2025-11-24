@@ -9,12 +9,12 @@
 
 - name: Create ~/.local/share/gnome-shell/extensions/
   ansible.builtin.file:
-    path: "{{ ansible_user_dir }}/.local/share/gnome-shell/extensions/"
+    path: "{{ ansible_facts['user_dir'] }}/.local/share/gnome-shell/extensions/"
     state: directory
     recurse: true
 
 - name: Get list of GNOME extensions
-  ansible.builtin.command: ls {{ ansible_user_dir }}/.local/share/gnome-shell/extensions/
+  ansible.builtin.command: ls {{ ansible_facts['user_dir'] }}/.local/share/gnome-shell/extensions/
   register: gnome_extensions_list
   changed_when: false
 
