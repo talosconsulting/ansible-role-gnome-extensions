@@ -4,12 +4,25 @@
 
 - name: Get GNOME extension information
   ansible.builtin.uri:
-    url: https://extensions.gnome.org/extension-info/?pk={{ item }}&shell_version={{ gnome_shell_version.stdout }}
-    return_content: true
+    url: https://extensions.gnome.org/extension-info/?pk={{ extension_id }}&shell_version={{ gnome_shell_version }}
   register: gnome_extension_info
+
+- name: Assert extension has a download for this shell version
+  ansible.builtin.assert:
+    that: gnome_extension_info.json.download_url | default('', true) | length > 0
+    fail_msg: >-
+      Extension {{ extension_id }} ({{ gnome_extension_info.json.uuid | default('unknown uuid') }})
+      has no download_url for GNOME Shell {{ gnome_shell_version }}. The extension may
+      not support this shell version.
 
 - name: Install GNOME extension
   ansible.builtin.command: gnome-extensions install https://extensions.gnome.org{{ gnome_extension_info.json.download_url }}
   register: install_gnome_extension
   changed_when: install_gnome_extension.rc == 0
-  when: gnome_extension_info.json.uuid not in gnome_extensions_list.stdout
+  when: gnome_extension_info.json.uuid not in gnome_extensions_installed_uuids
+
+- name: Enable GNOME extension
+  ansible.builtin.command: gnome-extensions enable {{ gnome_extension_info.json.uuid }}
+  register: enable_gnome_extension
+  changed_when: enable_gnome_extension.rc == 0
+  when: gnome_extension_info.json.uuid not in gnome_extensions_enabled_list.stdout_lines
