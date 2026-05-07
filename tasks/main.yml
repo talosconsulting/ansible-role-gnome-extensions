@@ -3,21 +3,36 @@
 # tasks file for lordtaytertot.gnome-extensions
 
 - name: Get GNOME Shell version
-  ansible.builtin.shell: gnome-shell --version | awk '{print $NF}'
-  register: gnome_shell_version
+  ansible.builtin.command: gnome-shell --version
+  register: gnome_shell_version_raw
   changed_when: false
+
+- name: Set gnome_shell_version fact
+  ansible.builtin.set_fact:
+    gnome_shell_version: "{{ gnome_shell_version_raw.stdout.split()[-1] }}"
 
 - name: Create ~/.local/share/gnome-shell/extensions/
   ansible.builtin.file:
     path: "{{ ansible_facts['user_dir'] }}/.local/share/gnome-shell/extensions/"
     state: directory
-    recurse: true
 
-- name: Get list of GNOME extensions
-  ansible.builtin.command: ls {{ ansible_facts['user_dir'] }}/.local/share/gnome-shell/extensions/
-  register: gnome_extensions_list
+- name: Get list of installed GNOME extensions
+  ansible.builtin.find:
+    paths: "{{ ansible_facts['user_dir'] }}/.local/share/gnome-shell/extensions/"
+    file_type: directory
+  register: gnome_extensions_installed
+
+- name: Build installed extension UUID list
+  ansible.builtin.set_fact:
+    gnome_extensions_installed_uuids: "{{ gnome_extensions_installed.files | map(attribute='path') | map('basename') | list }}"
+
+- name: Get list of enabled GNOME extensions
+  ansible.builtin.command: gnome-extensions list --enabled
+  register: gnome_extensions_enabled_list
   changed_when: false
 
 - name: Install extension(s)
   ansible.builtin.include_tasks: gnome-extension-tasks.yml
   loop: "{{ gnome_extension_ids }}"
+  loop_control:
+    loop_var: extension_id
