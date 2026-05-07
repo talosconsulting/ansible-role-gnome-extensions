@@ -1,9 +1,21 @@
 #SPDX-License-Identifier: MIT-0
 galaxy_info:
+  role_name: gnome_extensions
+  namespace: lordtaytertot
   author: lordtaytertot
-  description: Manages GNOME Extensions
+  description: "Manages GNOME Extensions"
   license: MIT
-  min_ansible_version: 2.10
+  min_ansible_version: 2.12
+  platforms:
+    - name: Fedora
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
   galaxy_tags:
     - gnome
     - extensions
