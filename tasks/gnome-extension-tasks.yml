@@ -25,4 +25,5 @@
   ansible.builtin.command: gnome-extensions enable {{ gnome_extension_info.json.uuid }}
   register: enable_gnome_extension
   changed_when: enable_gnome_extension.rc == 0
-  when: gnome_extension_info.json.uuid not in gnome_extensions_enabled_list.stdout_lines
+  when: >-
+    "'%s'" | format(gnome_extension_info.json.uuid) not in gnome_extensions_enabled_list.stdout

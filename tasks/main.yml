@@ -27,7 +27,7 @@
     gnome_extensions_installed_uuids: "{{ gnome_extensions_installed.files | map(attribute='path') | map('basename') | list }}"
 
 - name: Get list of enabled GNOME extensions
-  ansible.builtin.command: gnome-extensions list --enabled
+  ansible.builtin.command: gsettings get org.gnome.shell enabled-extensions
   register: gnome_extensions_enabled_list
   changed_when: false
 
