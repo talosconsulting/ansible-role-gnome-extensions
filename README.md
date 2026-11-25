@@ -8,6 +8,10 @@ Requirements
 
 [GNOME](https://www.gnome.org/) 50+
 
+GNOME Shell only discovers extensions when it starts. If the user is logged in
+when the role installs a new extension, the extension is marked as enabled but
+does not load until they log out and back in.
+
 GNOME extensions install per-user under `~/.local/share/gnome-shell/extensions/`,
 so this role must be run as the desktop user — **not** as `root`. Use
 `become_user` (or run the play unprivileged) to target the correct account:
