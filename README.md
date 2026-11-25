@@ -1,4 +1,4 @@
-lordtaytertot.gnome-extensions
+lordtaytertot.gnome_extensions
 ==============================
 
 Manages GNOME Extensions using the newer `gnome-extensions` command
@@ -7,6 +7,10 @@ Requirements
 ------------
 
 [GNOME](https://www.gnome.org/) 50+
+
+GNOME Shell only discovers extensions when it starts. If the user is logged in
+when the role installs a new extension, the extension is marked as enabled but
+does not load until they log out and back in.
 
 GNOME extensions install per-user under `~/.local/share/gnome-shell/extensions/`,
 so this role must be run as the desktop user — **not** as `root`. Use
@@ -17,7 +21,7 @@ so this role must be run as the desktop user — **not** as `root`. Use
   become: true
   become_user: alice
   roles:
-    - lordtaytertot.gnome-extensions
+    - lordtaytertot.gnome_extensions
 ```
 
 Role Variables
@@ -31,7 +35,7 @@ Example Playbook
 ```yaml
 - hosts: servers
   roles:
-     - { role: lordtaytertot.gnome-extensions, gnome_extension_ids: [ 517, 5470 ] }
+     - { role: lordtaytertot.gnome_extensions, gnome_extension_ids: [ 517, 5470 ] }
 ```
 
 License

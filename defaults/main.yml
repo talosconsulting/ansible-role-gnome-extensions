@@ -1,4 +1,4 @@
-#SPDX-License-Identifier: MIT-0
+# SPDX-License-Identifier: MIT-0
 ---
-# defaults file for lordtaytertot.gnome-extensions
+# defaults file for lordtaytertot.gnome_extensions
 gnome_extension_ids: []

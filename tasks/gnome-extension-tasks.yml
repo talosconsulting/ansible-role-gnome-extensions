@@ -1,4 +1,4 @@
-#SPDX-License-Identifier: MIT-0
+# SPDX-License-Identifier: MIT-0
 ---
 # gnome-extensions-tasks.yml
 
@@ -21,9 +21,39 @@
   changed_when: install_gnome_extension.rc == 0
   when: gnome_extension_info.json.uuid not in gnome_extensions_installed_uuids
 
+# A running GNOME Shell only discovers extensions at startup, so enabling one
+# installed during this session fails with "does not exist". In that case the
+# UUID is added to enabled-extensions directly and loads at the next login.
 - name: Enable GNOME extension
   ansible.builtin.command: gnome-extensions enable {{ gnome_extension_info.json.uuid }}
   register: enable_gnome_extension
   changed_when: enable_gnome_extension.rc == 0
+  failed_when: >-
+    enable_gnome_extension.rc != 0 and
+    install_gnome_extension is not changed and
+    gnome_extension_info.json.uuid not in gnome_extensions_installed_uuids
   when: >-
     "'%s'" | format(gnome_extension_info.json.uuid) not in gnome_extensions_enabled_list.stdout
+
+- name: Enable GNOME extension at next login
+  when:
+    - enable_gnome_extension is not skipped
+    - enable_gnome_extension.rc != 0
+  block:
+    - name: Read enabled GNOME extensions
+      ansible.builtin.command: gsettings get org.gnome.shell enabled-extensions
+      register: gnome_extensions_enabled_now
+      changed_when: false
+
+    - name: Add extension to enabled-extensions
+      vars:
+        enabled_uuids: "{{ gnome_extensions_enabled_now.stdout | regex_findall(\"'([^']+)'\") }}"
+      ansible.builtin.command:
+        argv:
+          - gsettings
+          - set
+          - org.gnome.shell
+          - enabled-extensions
+          - "{{ (enabled_uuids | list) + [gnome_extension_info.json.uuid] }}"
+      changed_when: true
+      when: gnome_extension_info.json.uuid not in enabled_uuids

@@ -1,6 +1,6 @@
-#SPDX-License-Identifier: MIT-0
+# SPDX-License-Identifier: MIT-0
 ---
-# tasks file for lordtaytertot.gnome-extensions
+# tasks file for lordtaytertot.gnome_extensions
 
 - name: Get GNOME Shell version
   ansible.builtin.command: gnome-shell --version
@@ -15,6 +15,7 @@
   ansible.builtin.file:
     path: "{{ ansible_facts['user_dir'] }}/.local/share/gnome-shell/extensions/"
     state: directory
+    mode: "0755"
 
 - name: Get list of installed GNOME extensions
   ansible.builtin.find:
