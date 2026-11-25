@@ -1,5 +1,6 @@
-#SPDX-License-Identifier: MIT-0
+# SPDX-License-Identifier: MIT-0
 ---
-- hosts: localhost
+- name: Test lordtaytertot.gnome_extensions
+  hosts: localhost
   roles:
-    - lordtaytertot.gnome-extensions
+    - lordtaytertot.gnome_extensions

@@ -1,4 +1,4 @@
-lordtaytertot.gnome-extensions
+lordtaytertot.gnome_extensions
 ==============================
 
 Manages GNOME Extensions using the newer `gnome-extensions` command
@@ -17,7 +17,7 @@ so this role must be run as the desktop user — **not** as `root`. Use
   become: true
   become_user: alice
   roles:
-    - lordtaytertot.gnome-extensions
+    - lordtaytertot.gnome_extensions
 ```
 
 Role Variables
@@ -31,7 +31,7 @@ Example Playbook
 ```yaml
 - hosts: servers
   roles:
-     - { role: lordtaytertot.gnome-extensions, gnome_extension_ids: [ 517, 5470 ] }
+     - { role: lordtaytertot.gnome_extensions, gnome_extension_ids: [ 517, 5470 ] }
 ```
 
 License
